@@ -1,4 +1,3 @@
-import java.util.ArrayList;
 import java.util.LinkedList;
 
 /**
@@ -106,6 +105,8 @@ public class NoGuiModel {
             System.out.println(o);
 
         }
+
+        // Запускаем архивацию
 
         new Zipper(args[positionOfDest + 1], compressionLevel, isVerbose, fileList);
 

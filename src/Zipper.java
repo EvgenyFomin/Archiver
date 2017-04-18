@@ -17,6 +17,36 @@ class Zipper {
         this.compressionLevel = compressionLevel;
         this.isVerbose = isVerbose;
         this.fileList = fileList;
+        pack();
+
+    }
+
+    private void pack() {
+        try (ZipOutputStream zipOutputStream = new ZipOutputStream(new FileOutputStream(destination))) {
+            byte[] buffer = new byte[1024];
+
+            zipOutputStream.setLevel(compressionLevel);
+
+            for (String o: fileList) {
+                zipOutputStream.putNextEntry(new ZipEntry(o));
+                try (FileInputStream fileInputStream = new FileInputStream(o)) {
+                    int len;
+                    while ((len = fileInputStream.read(buffer)) > 0) {
+                        zipOutputStream.write(buffer, 0, len);
+
+                    }
+                    zipOutputStream.closeEntry();
+
+                }
+
+            }
+
+        } catch (FileNotFoundException e) {
+            System.out.println("Файл не найден");
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
     }
 
