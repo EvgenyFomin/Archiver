@@ -6,7 +6,7 @@ import java.util.LinkedList;
 
 public class NoGuiModel {
     private String[] args;
-    
+
     public NoGuiModel(String[] args) {
         this.args = new String[args.length];
         for (int i = 0; i < args.length; i++) {
@@ -14,7 +14,7 @@ public class NoGuiModel {
 
         }
         parser();
-        
+
     }
 
     private void parser() {
@@ -24,7 +24,7 @@ public class NoGuiModel {
 
         // Независимо от того, как введена строка, если присутствует ключ --help, то выводим справку
 
-        for (String o: args) {
+        for (String o : args) {
             if (o.equals("--help")) {
                 help();
                 System.exit(0);
@@ -111,9 +111,9 @@ public class NoGuiModel {
         System.out.println("Тут будет справка");
 
     }
-    
+
     public void out() {
-        for (String o: args) {
+        for (String o : args) {
             System.out.println(o);
 
         }

@@ -11,9 +11,7 @@ public class MainArchive {
             }
             new NoGuiModel(s);
 
-        }
-
-        else {
+        } else {
             System.out.println("Реализуем GUI модель...");
 
         }

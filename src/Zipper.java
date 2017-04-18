@@ -27,7 +27,7 @@ class Zipper {
 
             zipOutputStream.setLevel(compressionLevel);
 
-            for (String o: fileList) {
+            for (String o : fileList) {
                 zipOutputStream.putNextEntry(new ZipEntry(o));
                 try (FileInputStream fileInputStream = new FileInputStream(o)) {
                     int len;
