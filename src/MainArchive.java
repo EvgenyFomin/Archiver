@@ -3,14 +3,20 @@
  */
 public class MainArchive {
     public static void main(String[] args) {
-        String[] s = {"/home/wolfram/test/testtxt1.txt", "/home/wolfram/test/testtxt2.txt", "-o", "/home/wolfram/test/archive.zip", "-q", "9"};
-        NoGuiModel noGuiModel = new NoGuiModel(s);
-//        noGuiModel.out();
+        if ((args.length != 0) && (args[0].equals("--no-gui"))) {
+            String[] s = new String[args.length - 1];
+            for (int i = 1; i < args.length; i++) {
+                s[i - 1] = args[i];
 
-//        if (args[0].equals("--no-gui")) {
-//
-//
-//        }
+            }
+            new NoGuiModel(s);
+
+        }
+
+        else {
+            System.out.println("Реализуем GUI модель...");
+
+        }
 
     }
 

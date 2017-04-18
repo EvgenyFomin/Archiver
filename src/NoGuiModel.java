@@ -101,11 +101,6 @@ public class NoGuiModel {
         System.out.println("isVerbose = " + isVerbose + ", compression level = " + compressionLevel
                 + ", destination = " + args[positionOfDest + 1]);
 
-        for (String o: fileList) {
-            System.out.println(o);
-
-        }
-
         // Запускаем архивацию
 
         new Zipper(args[positionOfDest + 1], compressionLevel, isVerbose, fileList);

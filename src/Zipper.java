@@ -39,13 +39,20 @@ class Zipper {
 
                 }
 
+                if (isVerbose) {
+                    System.out.println("Файл " + o + " добавлен в архив");
+
+                }
+
             }
 
         } catch (FileNotFoundException e) {
-            System.out.println("Файл не найден");
-            e.printStackTrace();
+            System.err.println("Файл не найден");
         } catch (IOException e) {
-            e.printStackTrace();
+            System.err.println("Ошибка ввода-вывода");
+        } catch (IllegalArgumentException e) {
+            System.err.println("Неверный уровень компрессии");
+
         }
 
     }
