@@ -9,10 +9,7 @@ public class NoGuiModel {
 
     public NoGuiModel(String[] args) {
         this.args = new String[args.length];
-        for (int i = 0; i < args.length; i++) {
-            this.args[i] = args[i];
-
-        }
+        System.arraycopy(args, 0, this.args, 0, args.length);
         parser();
 
     }
@@ -20,7 +17,9 @@ public class NoGuiModel {
     private void parser() {
         int positionOfDest = -1;
         int positionOfCompressionLevel = -1;
+        int compressionLevel = -1;
         boolean isVerbose = false;
+
 
         // Независимо от того, как введена строка, если присутствует ключ --help, то выводим справку
 
@@ -60,8 +59,6 @@ public class NoGuiModel {
 
         }
 
-        int compressionLevel = -1;
-
         if (positionOfCompressionLevel == args.length - 1) {
             positionOfCompressionLevel = -1;
 
@@ -98,8 +95,8 @@ public class NoGuiModel {
 
         }
 
-        System.out.println("isVerbose = " + isVerbose + ", compression level = " + compressionLevel
-                + ", destination = " + args[positionOfDest + 1]);
+//        System.out.println("isVerbose = " + isVerbose + ", compression level = " + compressionLevel
+//                + ", destination = " + args[positionOfDest + 1]);
 
         // Запускаем архивацию
 

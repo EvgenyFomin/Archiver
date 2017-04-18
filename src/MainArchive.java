@@ -12,7 +12,7 @@ public class MainArchive {
             new NoGuiModel(s);
 
         } else {
-            System.out.println("Реализуем GUI модель...");
+            new GuiModel().guiDialog();
 
         }
 
