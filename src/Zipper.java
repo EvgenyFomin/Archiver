@@ -13,8 +13,8 @@ class Zipper {
     private List<String> fileList, filesNameList;
     private boolean isGui;
 
-    protected Zipper(boolean isGui, String destination, int compressionLevel,
-                     boolean isVerbose, List<String> fileList, List<String> filesNameList) {
+    Zipper(boolean isGui, String destination, int compressionLevel,
+           boolean isVerbose, List<String> fileList, List<String> filesNameList) {
         this.destination = destination;
         this.compressionLevel = compressionLevel;
         this.isVerbose = isVerbose;

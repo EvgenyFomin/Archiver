@@ -11,7 +11,6 @@ import java.util.ArrayList;
  */
 
 class GuiModel extends Component {
-    boolean isVerbose = false;
     int compressionLevel = -1;
     private String destination;
     private JTextField nameField, destField;
@@ -195,8 +194,17 @@ class GuiModel extends Component {
 
         });
 
+        // Таблица
+
         FilesTableModel filesTableModel = new FilesTableModel();
         JTable filesTable = new JTable(filesTableModel);
+        filesTable.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyReleased(KeyEvent e) {
+                super.keyReleased(e);
+            }
+
+        });
         JScrollPane filesTableScrollPane = new JScrollPane(filesTable);
         filesTable.setPreferredSize(new Dimension(500, 400));
 
@@ -248,6 +256,16 @@ class GuiModel extends Component {
 
         // Кнопка МИНУС
 
+        minusButton.addActionListener(e -> {
+            int[] sel = filesTable.getSelectedRows();
+            for (int i = sel.length - 1; i > -1; i--) {
+                filesTableModel.removeRow(sel[i]);
+
+            }
+
+            new Zipper(true, destination, -1, false, fileList, filesNameList);
+
+        });
 
         mainframe.add(pathPanel, new GridBagConstraints(0, 0, 0, 0, 1, 1,
                 GridBagConstraints.NORTHWEST, GridBagConstraints.NORTHWEST, new Insets(0, 0, 0, 0), 0, 0));
@@ -315,9 +333,15 @@ class GuiModel extends Component {
         }
 
         public void addFile(String[] row) {
-            String[] rowTable;
-            rowTable = row;
-            dataArrayList.add(rowTable);
+            dataArrayList.add(row);
+
+        }
+
+        public void removeRow(int row) {
+            dataArrayList.remove(row);
+            filesNameList.remove(row);
+            fileList.remove(row);
+            fireTableDataChanged();
 
         }
 
