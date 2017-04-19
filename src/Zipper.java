@@ -1,5 +1,5 @@
-import java.util.LinkedList;
 import java.io.*;
+import java.util.List;
 import java.util.zip.*;
 
 /**
@@ -10,13 +10,17 @@ class Zipper {
     private String destination;
     private int compressionLevel;
     private boolean isVerbose;
-    private LinkedList<String> fileList;
+    private List<String> fileList, filesNameList;
+    private boolean isGui;
 
-    protected Zipper(String destination, int compressionLevel, boolean isVerbose, LinkedList<String> fileList) {
+    protected Zipper(boolean isGui, String destination, int compressionLevel,
+                     boolean isVerbose, List<String> fileList, List<String> filesNameList) {
         this.destination = destination;
         this.compressionLevel = compressionLevel;
         this.isVerbose = isVerbose;
         this.fileList = fileList;
+        this.isGui = isGui;
+        this.filesNameList = filesNameList;
         pack();
 
     }
@@ -27,9 +31,16 @@ class Zipper {
 
             zipOutputStream.setLevel(compressionLevel);
 
-            for (String o : fileList) {
-                zipOutputStream.putNextEntry(new ZipEntry(o));
-                try (FileInputStream fileInputStream = new FileInputStream(o)) {
+            for (int i = 0; i < fileList.size(); i++) {
+                if (isGui) {
+                    zipOutputStream.putNextEntry(new ZipEntry(filesNameList.get(i)));
+
+                } else {
+                    zipOutputStream.putNextEntry(new ZipEntry(fileList.get(i)));
+
+                }
+
+                try (FileInputStream fileInputStream = new FileInputStream(fileList.get(i))) {
                     int len;
                     while ((len = fileInputStream.read(buffer)) > 0) {
                         zipOutputStream.write(buffer, 0, len);
@@ -40,7 +51,7 @@ class Zipper {
                 }
 
                 if (isVerbose) {
-                    System.out.println("Файл " + o + " добавлен в архив");
+                    System.out.println("Файл " + fileList.get(i) + " добавлен в архив");
 
                 }
 

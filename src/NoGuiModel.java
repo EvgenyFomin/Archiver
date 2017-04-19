@@ -1,4 +1,4 @@
-import java.util.LinkedList;
+import java.util.ArrayList;
 
 /**
  * Created by wolfram on 18.04.17.
@@ -84,20 +84,20 @@ public class NoGuiModel {
 
         // Список файлов
 
-        LinkedList<String> fileList = new LinkedList<>();
+        ArrayList<String> fileList = new ArrayList<>();
 
         int min = ((positionOfCompressionLevel < positionOfDest) && (positionOfCompressionLevel != -1)) ?
                 positionOfCompressionLevel : positionOfDest;
 
 
         for (int i = Boolean.compare(isVerbose, true) + 1; i < min; i++) {
-            fileList.addFirst(args[i]);
+            fileList.add(args[i]);
 
         }
 
         // Запускаем архивацию
 
-        new Zipper(args[positionOfDest + 1], compressionLevel, isVerbose, fileList);
+        new Zipper(false, args[positionOfDest + 1], compressionLevel, isVerbose, fileList, null);
 
     }
 
