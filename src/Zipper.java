@@ -1,3 +1,8 @@
+import com.sun.deploy.util.SystemUtils;
+import com.sun.webkit.ThemeClient;
+
+import javax.swing.*;
+import java.awt.*;
 import java.io.*;
 import java.util.List;
 import java.util.zip.*;
@@ -6,12 +11,13 @@ import java.util.zip.*;
  * Created by wolfram on 18.04.17.
  */
 
-class Zipper {
+class Zipper implements Runnable {
     private String destination;
     private int compressionLevel;
     private boolean isVerbose;
     private List<String> fileList, filesNameList;
     private boolean isGui;
+    private int n = 0;
 
     Zipper(boolean isGui, String destination, int compressionLevel,
            boolean isVerbose, List<String> fileList, List<String> filesNameList) {
@@ -21,11 +27,20 @@ class Zipper {
         this.fileList = fileList;
         this.isGui = isGui;
         this.filesNameList = filesNameList;
-        pack();
 
     }
 
-    private void pack() {
+    @Override
+    public void run() {
+        ProgressBar progressBar = new ProgressBar();
+        Thread thread = new Thread(progressBar);
+        thread.start();
+        pack();
+        notify();
+
+    }
+
+    public void pack() {
         try (ZipOutputStream zipOutputStream = new ZipOutputStream(new FileOutputStream(destination))) {
             byte[] buffer = new byte[1024];
 
@@ -55,6 +70,8 @@ class Zipper {
 
                 }
 
+                n++;
+
             }
 
         } catch (FileNotFoundException e) {
@@ -63,6 +80,39 @@ class Zipper {
             System.err.println("Ошибка ввода-вывода");
         } catch (IllegalArgumentException e) {
             System.err.println("Неверный уровень компрессии");
+
+        }
+
+    }
+
+    class ProgressBar implements Runnable {
+        @Override
+        public void run() {
+            setProgressBar();
+        }
+
+        public void setProgressBar() {
+            JFrame frame = new JFrame();
+            frame.setSize(300, 150);
+            frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+            frame.setLocationRelativeTo(null);
+            frame.setLayout(new GridBagLayout());
+
+            JProgressBar progressBar = new JProgressBar();
+            progressBar.setMinimum(0);
+            progressBar.setMaximum(fileList.size());
+            progressBar.setStringPainted(true);
+
+            frame.setVisible(true);
+            frame.add(progressBar);
+
+            while (n < fileList.size()) {
+                progressBar.setValue(n);
+
+            }
+
+            frame.dispose();
+
 
         }
 

@@ -2,7 +2,6 @@ import javax.swing.*;
 import javax.swing.table.AbstractTableModel;
 import java.awt.*;
 import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.io.File;
@@ -213,7 +212,7 @@ class GuiModel extends Component {
         FilesTableModel filesTableModel = new FilesTableModel();
         JTable filesTable = new JTable(filesTableModel);
         JScrollPane filesTableScrollPane = new JScrollPane(filesTable);
-        filesTable.setPreferredSize(new Dimension(500, 400));
+        filesTableScrollPane.setPreferredSize(new Dimension(450, 400));
 
         // Кнопка ПЛЮС
 
@@ -245,13 +244,14 @@ class GuiModel extends Component {
                     fileList.add(files[i].getPath());
                     filesNameList.add(files[i].getName());
                     filesTableModel.addFile(new String[]{files[i].getName(), files[i].getPath()});
-                    System.out.println(files[i].getPath());
 
                 }
 
                 filesTableModel.fireTableDataChanged();
 
-                new Zipper(true, destination, compressionLevel, false, fileList, filesNameList);
+                Zipper zipper = new Zipper(true, destination, compressionLevel, false, fileList, filesNameList);
+                Thread thread = new Thread(zipper);
+                thread.start();
 
             } else {
                 new Errors("Файлы имеют одинаковые названия");
@@ -270,7 +270,9 @@ class GuiModel extends Component {
 
             }
 
-            new Zipper(true, destination, compressionLevel, false, fileList, filesNameList);
+            Zipper zipper = new Zipper(true, destination, compressionLevel, false, fileList, filesNameList);
+            Thread thread = new Thread(zipper);
+            thread.start();
 
         });
 
