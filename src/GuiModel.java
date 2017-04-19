@@ -1,6 +1,8 @@
 import javax.swing.*;
 import javax.swing.table.AbstractTableModel;
 import java.awt.*;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.io.File;
@@ -75,13 +77,13 @@ class GuiModel extends Component {
                 } else {
                     destination = (nameField.getText().equals("")) ?
                             destField.getText() + "/" + "Archive.zip" : destField.getText() + "/" + nameField.getText();
-                    frame.setVisible(false);
 
                 }
 
             }
 
             if (!destination.equals("")) {
+                frame.setVisible(false);
                 guiMain();
 
             }
@@ -128,6 +130,7 @@ class GuiModel extends Component {
         menuPanel.setLayout(new GridBagLayout());
 
         JLabel pathLabel = new JLabel("Путь до архива: ");
+        JLabel compressionLevelLabel = new JLabel("Уровень компрессии: ");
         JTextField pathField = new JTextField(20);
         pathField.setText(destination);
         pathField.addKeyListener(new KeyAdapter() {
@@ -152,10 +155,21 @@ class GuiModel extends Component {
         plusButton.setIcon(new ImageIcon("./plus.png"));
         minusButton.setIcon(new ImageIcon("./minus.png"));
 
+        JComboBox<String> compressLevelComboBox =
+                new JComboBox<>(new String[]{"Default", "0", "1", "2", "3", "4", "5", "6", "7", "8", "9"});
+
+        compressLevelComboBox.addItemListener(e -> {
+            if (e.getStateChange() == ItemEvent.SELECTED) {
+                compressionLevel = compressLevelComboBox.getSelectedIndex() - 1;
+
+            }
+
+        });
+
         // Кнопка ИЗМЕНИТЬ
 
         changeButton.addActionListener(e -> {
-            JFrame eosFrame = new JFrame("Ошибка");
+            JFrame eosFrame = new JFrame();
             eosFrame.setSize(400, 150);
             eosFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
             eosFrame.setLocationRelativeTo(null);
@@ -181,7 +195,7 @@ class GuiModel extends Component {
 
             noButton.addActionListener(e1 -> eosFrame.dispose());
 
-            // Добавление компонент на фрейм с ошибкой
+            // Добавление компонент на фрейм
 
             eosFrame.add(errorLabel, new GridBagConstraints(0, 0, 3, 1, 0, 1,
                     GridBagConstraints.CENTER, GridBagConstraints.CENTER, new Insets(10, 1, 1, 1), 0, 0));
@@ -198,13 +212,6 @@ class GuiModel extends Component {
 
         FilesTableModel filesTableModel = new FilesTableModel();
         JTable filesTable = new JTable(filesTableModel);
-        filesTable.addKeyListener(new KeyAdapter() {
-            @Override
-            public void keyReleased(KeyEvent e) {
-                super.keyReleased(e);
-            }
-
-        });
         JScrollPane filesTableScrollPane = new JScrollPane(filesTable);
         filesTable.setPreferredSize(new Dimension(500, 400));
 
@@ -244,7 +251,7 @@ class GuiModel extends Component {
 
                 filesTableModel.fireTableDataChanged();
 
-                new Zipper(true, destination, -1, false, fileList, filesNameList);
+                new Zipper(true, destination, compressionLevel, false, fileList, filesNameList);
 
             } else {
                 new Errors("Файлы имеют одинаковые названия");
@@ -263,25 +270,30 @@ class GuiModel extends Component {
 
             }
 
-            new Zipper(true, destination, -1, false, fileList, filesNameList);
+            new Zipper(true, destination, compressionLevel, false, fileList, filesNameList);
 
         });
 
         mainframe.add(pathPanel, new GridBagConstraints(0, 0, 0, 0, 1, 1,
                 GridBagConstraints.NORTHWEST, GridBagConstraints.NORTHWEST, new Insets(0, 0, 0, 0), 0, 0));
         mainframe.add(tablePanel, new GridBagConstraints(0, 1, 0, 0, 1, 1,
-                GridBagConstraints.WEST, GridBagConstraints.WEST, new Insets(0, 0, 0, 0), 0, 0));
+                GridBagConstraints.WEST, GridBagConstraints.WEST, new Insets(0, 5, 0, 0), 0, 0));
         mainframe.add(menuPanel, new GridBagConstraints(1, 1, 0, 0, 1, 1,
-                GridBagConstraints.EAST, GridBagConstraints.EAST, new Insets(0, 0, 0, 100), 50, 100));
+                GridBagConstraints.EAST, GridBagConstraints.EAST, new Insets(0, 0, 0, 30), 80, 100));
 
+//        menuPanel.setBackground(Color.GREEN);
         pathPanel.add(pathLabel);
         pathPanel.add(pathField);
         pathPanel.add(changeButton);
         tablePanel.add(filesTableScrollPane);
         menuPanel.add(plusButton, new GridBagConstraints(0, 0, 1, 1, 1, 2,
-                GridBagConstraints.NORTH, GridBagConstraints.CENTER, new Insets(0, 0, 0, 0), 0, 0));
+                GridBagConstraints.NORTH, GridBagConstraints.CENTER, new Insets(0, 100, 0, 0), 0, 0));
         menuPanel.add(minusButton, new GridBagConstraints(0, 1, 1, 1, 1, 2,
-                GridBagConstraints.NORTH, GridBagConstraints.CENTER, new Insets(0, 1, 0, 0), 0, 0));
+                GridBagConstraints.NORTH, GridBagConstraints.CENTER, new Insets(0, 100, 0, 0), 0, 0));
+        menuPanel.add(compressionLevelLabel, new GridBagConstraints(0, 2, 1, 1, 0, 1,
+                GridBagConstraints.NORTH, GridBagConstraints.CENTER, new Insets(5, 0, 0, 0), 0, 0));
+        menuPanel.add(compressLevelComboBox, new GridBagConstraints(1, 2, 1, 1, 0, 1,
+                GridBagConstraints.NORTH, GridBagConstraints.CENTER, new Insets(0, -50, 0, 20), 0, 0));
 
         mainframe.setResizable(false);
         pathPanel.setVisible(true);
