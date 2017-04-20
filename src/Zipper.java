@@ -1,6 +1,3 @@
-import com.sun.deploy.util.SystemUtils;
-import com.sun.webkit.ThemeClient;
-
 import javax.swing.*;
 import java.awt.*;
 import java.io.*;
@@ -36,7 +33,6 @@ class Zipper implements Runnable {
         Thread thread = new Thread(progressBar);
         thread.start();
         pack();
-        notify();
 
     }
 
@@ -89,12 +85,13 @@ class Zipper implements Runnable {
         @Override
         public void run() {
             setProgressBar();
+
         }
 
         public void setProgressBar() {
-            JFrame frame = new JFrame();
+            JFrame frame = new JFrame("Процесс архивации/удаления");
             frame.setSize(300, 150);
-            frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+            frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
             frame.setLocationRelativeTo(null);
             frame.setLayout(new GridBagLayout());
 
@@ -106,8 +103,10 @@ class Zipper implements Runnable {
             frame.setVisible(true);
             frame.add(progressBar);
 
+
             while (n < fileList.size()) {
                 progressBar.setValue(n);
+
 
             }
 

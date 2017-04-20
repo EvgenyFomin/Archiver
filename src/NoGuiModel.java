@@ -1,3 +1,4 @@
+import java.io.*;
 import java.util.ArrayList;
 
 /**
@@ -97,12 +98,25 @@ public class NoGuiModel {
 
         // Запускаем архивацию
 
-        new Zipper(false, args[positionOfDest + 1], compressionLevel, isVerbose, fileList, null);
+        Zipper zipper = new Zipper(false, args[positionOfDest + 1], compressionLevel, isVerbose, fileList, null);
+        zipper.pack();
 
     }
 
     private void help() {
-        System.out.println("Тут будет справка");
+        try (BufferedReader reader = new BufferedReader(new FileReader("./help.txt"))) {
+            String s;
+            while ((s = reader.readLine()) != null) {
+                System.out.println(s);
+
+            }
+
+
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
     }
 

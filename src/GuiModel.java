@@ -225,41 +225,44 @@ class GuiModel extends Component {
             fileChooser.showOpenDialog(this);
             File[] files = fileChooser.getSelectedFiles();
             boolean isSafety = true;
-            if (filesNameList.size() != 0) {
-                for (int i = 0; i < files.length; i++) {
-                    for (int j = 0; j < filesNameList.size(); j++) {
-                        if (filesNameList.get(j).equals(files[i].getName())) {
-                            isSafety = false;
-                            break;
+            if (files.length != 0) {
+                if (filesNameList.size() != 0) {
+                    for (int i = 0; i < files.length; i++) {
+                        for (int j = 0; j < filesNameList.size(); j++) {
+                            if (filesNameList.get(j).equals(files[i].getName())) {
+                                isSafety = false;
+                                break;
+
+                            }
 
                         }
 
                     }
-
-                }
-            }
-
-            if (isSafety) {
-                for (int i = 0; i < files.length; i++) {
-                    fileList.add(files[i].getPath());
-                    filesNameList.add(files[i].getName());
-                    filesTableModel.addFile(new String[]{files[i].getName(), files[i].getPath()});
-
                 }
 
-                filesTableModel.fireTableDataChanged();
+                if (isSafety) {
+                    for (int i = 0; i < files.length; i++) {
+                        fileList.add(files[i].getPath());
+                        filesNameList.add(files[i].getName());
+                        filesTableModel.addFile(new String[]{files[i].getName(), files[i].getPath()});
 
-                Zipper zipper = new Zipper(true, destination, compressionLevel, false, fileList, filesNameList);
-                Thread thread = new Thread(zipper);
-                thread.start();
+                    }
 
-            } else {
-                new Errors("Файлы имеют одинаковые названия");
+                    filesTableModel.fireTableDataChanged();
+                    Zipper zipper = new Zipper(true, destination, compressionLevel, false, fileList, filesNameList);
+                    Thread thread = new Thread(zipper);
+                    thread.start();
 
+
+                } else {
+                    new Errors("Файлы имеют одинаковые названия");
+
+                }
             }
 
 
         });
+
 
         // Кнопка МИНУС
 
@@ -283,7 +286,7 @@ class GuiModel extends Component {
         mainframe.add(menuPanel, new GridBagConstraints(1, 1, 0, 0, 1, 1,
                 GridBagConstraints.EAST, GridBagConstraints.EAST, new Insets(0, 0, 0, 30), 80, 100));
 
-//        menuPanel.setBackground(Color.GREEN);
+
         pathPanel.add(pathLabel);
         pathPanel.add(pathField);
         pathPanel.add(changeButton);
