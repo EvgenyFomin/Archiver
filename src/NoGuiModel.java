@@ -1,5 +1,6 @@
 import java.io.*;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 /**
  * Created by wolfram on 18.04.17.
@@ -88,13 +89,12 @@ public class NoGuiModel {
         ArrayList<String> fileList = new ArrayList<>();
 
         int min = ((positionOfCompressionLevel < positionOfDest) && (positionOfCompressionLevel != -1)) ?
-                positionOfCompressionLevel : positionOfDest;
+                positionOfCompressionLevel : positionOfDest; /* Данная переменная определяет что ближе - -q или -o
+                                                          Это позволяет создавать --no-gui запросы с разным порядком ключей */
 
+        // Добавляем в filelist все файлы
 
-        for (int i = Boolean.compare(isVerbose, true) + 1; i < min; i++) {
-            fileList.add(args[i]);
-
-        }
+        fileList.addAll(Arrays.asList(args).subList(Boolean.compare(isVerbose, true) + 1, min));
 
         // Запускаем архивацию
 
@@ -112,18 +112,8 @@ public class NoGuiModel {
             }
 
 
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
-        }
-
-    }
-
-    public void out() {
-        for (String o : args) {
-            System.out.println(o);
-
         }
 
     }

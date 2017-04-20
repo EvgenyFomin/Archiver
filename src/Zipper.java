@@ -36,7 +36,7 @@ class Zipper implements Runnable {
 
     }
 
-    public void pack() {
+    void pack() {
         try (ZipOutputStream zipOutputStream = new ZipOutputStream(new FileOutputStream(destination))) {
             byte[] buffer = new byte[1024];
 
@@ -81,18 +81,19 @@ class Zipper implements Runnable {
 
     }
 
-    class ProgressBar implements Runnable {
+    private class ProgressBar implements Runnable {
         @Override
         public void run() {
             setProgressBar();
 
         }
 
-        public void setProgressBar() {
+        void setProgressBar() {
             JFrame frame = new JFrame("Процесс архивации/удаления");
             frame.setSize(300, 150);
             frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
             frame.setLocationRelativeTo(null);
+            frame.setResizable(false);
             frame.setLayout(new GridBagLayout());
 
             JProgressBar progressBar = new JProgressBar();
@@ -103,15 +104,12 @@ class Zipper implements Runnable {
             frame.setVisible(true);
             frame.add(progressBar);
 
-
             while (n < fileList.size()) {
                 progressBar.setValue(n);
-
 
             }
 
             frame.dispose();
-
 
         }
 

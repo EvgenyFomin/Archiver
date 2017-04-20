@@ -4,12 +4,15 @@ import java.awt.*;
 /**
  * Created by wolfram on 18.04.17.
  */
-public class Errors {
+
+// Отдельный класс-шаблон для реализации ошибок с одной кнопкой
+
+class Errors {
 
     private String errorMsg;
     private int windowSize;
 
-    public Errors(String errorMsg) {
+    Errors(String errorMsg) {
         this.errorMsg = errorMsg;
         windowSize = errorMsg.length() + 300;
         error();
@@ -22,6 +25,7 @@ public class Errors {
         errorFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         errorFrame.setLocationRelativeTo(null);
         errorFrame.setLayout(new GridBagLayout());
+        errorFrame.setResizable(false);
 
         JLabel errorLabel = new JLabel(errorMsg);
 
@@ -40,6 +44,5 @@ public class Errors {
         errorFrame.setVisible(true);
 
     }
-
 
 }

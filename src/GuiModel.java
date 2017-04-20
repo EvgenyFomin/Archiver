@@ -12,23 +12,24 @@ import java.util.ArrayList;
  */
 
 class GuiModel extends Component {
-    int compressionLevel = -1;
+    private int compressionLevel = -1;
     private String destination;
     private JTextField nameField, destField;
-    private JFrame frame;
-    ArrayList<String> fileList = new ArrayList<>();
-    ArrayList<String> filesNameList = new ArrayList<>();
+    private JFrame dialogFrame;
+    private ArrayList<String> fileList = new ArrayList<>();
+    private ArrayList<String> filesNameList = new ArrayList<>();
 
     // Диалоговое окно создания пути для архива
 
     void guiDialog() {
-        frame = new JFrame("Создание архива");
-        frame.setSize(500, 300);
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setLocationRelativeTo(null);
-        frame.setLayout(new GridBagLayout());
+        dialogFrame = new JFrame("Создание архива");
+        dialogFrame.setSize(500, 300);
+        dialogFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        dialogFrame.setLocationRelativeTo(null);
+        dialogFrame.setLayout(new GridBagLayout());
 
         nameField = new JTextField(30);
+        destField = new JTextField();
         nameField.addKeyListener(new KeyAdapter() {
             @Override
             public void keyTyped(KeyEvent e) {
@@ -43,23 +44,31 @@ class GuiModel extends Component {
 
         });
 
-
-        destField = new JTextField();
+        // Добавление кнопок и AL
 
         JButton destButton = new JButton("Обзор");
         JButton okButton = new JButton("Ok");
+
         destButton.addActionListener(e -> {
-            JButton open = new JButton();
             JFileChooser fileChooser = new JFileChooser();
-            fileChooser.setCurrentDirectory(new File("/home/wolfram/test"));
-            fileChooser.setDialogTitle("Выбор директории");
-            fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-            fileChooser.showOpenDialog(open);
-            destination = fileChooser.getSelectedFile().getAbsolutePath();
-            destField.setText(destination);
+            try {
+                fileChooser.setDialogTitle("Выбор директории");
+                fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+                fileChooser.showOpenDialog(this);
+                destination = fileChooser.getSelectedFile().getAbsolutePath();
+                destField.setText(destination);
+
+            } catch (NullPointerException E) {
+
+            }
+
 
         });
+
+
         okButton.addActionListener(e -> {
+            // Всевозможные проверки на директорию архива
+
             if (destField.getText().equals("") && nameField.getText().equals("")) {
                 destination = "Archive.zip";
 
@@ -67,9 +76,9 @@ class GuiModel extends Component {
                 destination = nameField.getText();
 
             } else {
-                File file = new File(destField.getText());
+                File directory = new File(destField.getText());
 
-                if (!file.exists()) {
+                if (!directory.exists()) {
                     new Errors("Данной директории не существует");
                     destination = "";
 
@@ -82,8 +91,50 @@ class GuiModel extends Component {
             }
 
             if (!destination.equals("")) {
-                frame.setVisible(false);
-                guiMain();
+                // Проверка на существование данного архива
+
+                if (new File(destination).exists()) {
+                    JFrame changeDialogFrame = new JFrame();
+                    changeDialogFrame.setSize(400, 150);
+                    changeDialogFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+                    changeDialogFrame.setLocationRelativeTo(null);
+                    changeDialogFrame.setLayout(new GridBagLayout());
+                    changeDialogFrame.setResizable(false);
+
+                    JLabel errorLabel = new JLabel("Данный файл уже существует. Заменить?");
+
+                    JButton yesButton = new JButton("Да");
+                    JButton noButton = new JButton("Нет");
+
+                    // Кнопка "ДА"
+
+                    yesButton.addActionListener(e1 -> {
+                        changeDialogFrame.dispose();
+                        dialogFrame.setVisible(false);
+                        guiMain();
+
+                    });
+
+                    // Кнопка "Нет"
+
+                    noButton.addActionListener(e1 -> changeDialogFrame.dispose());
+
+                    // Добавление компонент на фрейм
+
+                    changeDialogFrame.add(errorLabel, new GridBagConstraints(0, 0, 3, 1, 0, 1,
+                            GridBagConstraints.CENTER, GridBagConstraints.CENTER, new Insets(10, 1, 1, 1), 0, 0));
+                    changeDialogFrame.add(yesButton, new GridBagConstraints(0, 1, 1, 0, 0, 1,
+                            GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, new Insets(1, 70, 1, 1), 8, 0));
+                    changeDialogFrame.add(noButton, new GridBagConstraints(1, 1, 1, 0, 0, 1,
+                            GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, new Insets(1, 17, 1, 1), 0, 0));
+
+                    changeDialogFrame.setVisible(true);
+
+                } else {
+                    dialogFrame.setVisible(false);
+                    guiMain();
+
+                }
 
             }
 
@@ -93,22 +144,24 @@ class GuiModel extends Component {
         JLabel dirLabel = new JLabel("Выберите директорию будущего архива");
         JLabel nameLabel = new JLabel("Имя будущего архива");
 
+        // Добавляем компоненты на dialogFrame
 
-        frame.add(dirLabel, new GridBagConstraints(0, 0, 1, 1, 0, 1,
+
+        dialogFrame.add(dirLabel, new GridBagConstraints(0, 0, 1, 1, 0, 1,
                 GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, new Insets(1, 1, 1, 1), 0, 0));
-        frame.add(destField, new GridBagConstraints(0, 1, 1, 1, 0, 1,
+        dialogFrame.add(destField, new GridBagConstraints(0, 1, 1, 1, 0, 1,
                 GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, new Insets(1, 1, 1, 1), 0, 6));
-        frame.add(destButton, new GridBagConstraints(1, 1, 1, 1, 0, 1,
+        dialogFrame.add(destButton, new GridBagConstraints(1, 1, 1, 1, 0, 1,
                 GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, new Insets(1, 1, 1, 1), 0, 0));
-        frame.add(nameLabel, new GridBagConstraints(0, 2, 1, 1, 0, 1,
+        dialogFrame.add(nameLabel, new GridBagConstraints(0, 2, 1, 1, 0, 1,
                 GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, new Insets(1, 1, 1, 1), 0, 0));
-        frame.add(nameField, new GridBagConstraints(0, 3, 1, 1, 0, 1,
+        dialogFrame.add(nameField, new GridBagConstraints(0, 3, 1, 1, 0, 1,
                 GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, new Insets(1, 1, 1, 1), 0, 6));
-        frame.add(okButton, new GridBagConstraints(1, 3, 1, 1, 0, 1,
+        dialogFrame.add(okButton, new GridBagConstraints(1, 3, 1, 1, 0, 1,
                 GridBagConstraints.SOUTHEAST, GridBagConstraints.HORIZONTAL, new Insets(1, 1, 1, 1), 0, 0));
-        frame.pack();
-        frame.setResizable(false);
-        frame.setVisible(true);
+        dialogFrame.pack();
+        dialogFrame.setResizable(false);
+        dialogFrame.setVisible(true);
 
     }
 
@@ -121,6 +174,8 @@ class GuiModel extends Component {
         mainframe.setLocationRelativeTo(null);
         mainframe.setLayout(new GridBagLayout());
 
+        // Бьем архиватор на 3 панели - путь до архива, таблица с файлами и меню
+
         JPanel pathPanel = new JPanel();
         JPanel tablePanel = new JPanel();
         JPanel menuPanel = new JPanel();
@@ -132,6 +187,9 @@ class GuiModel extends Component {
         JLabel compressionLevelLabel = new JLabel("Уровень компрессии: ");
         JTextField pathField = new JTextField(20);
         pathField.setText(destination);
+
+        // Запрещаем изменять JTextField. Только если по кнопке :)
+
         pathField.addKeyListener(new KeyAdapter() {
             @Override
             public void keyPressed(KeyEvent e) {
@@ -168,11 +226,12 @@ class GuiModel extends Component {
         // Кнопка ИЗМЕНИТЬ
 
         changeButton.addActionListener(e -> {
-            JFrame eosFrame = new JFrame();
-            eosFrame.setSize(400, 150);
-            eosFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-            eosFrame.setLocationRelativeTo(null);
-            eosFrame.setLayout(new GridBagLayout());
+            JFrame endOfSessionFrame = new JFrame();
+            endOfSessionFrame.setSize(400, 150);
+            endOfSessionFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+            endOfSessionFrame.setLocationRelativeTo(null);
+            endOfSessionFrame.setLayout(new GridBagLayout());
+            endOfSessionFrame.setResizable(false);
 
             JLabel errorLabel = new JLabel("Завершить работу с данным архивом?");
 
@@ -182,9 +241,9 @@ class GuiModel extends Component {
             // Кнопка "ДА"
 
             yesButton.addActionListener(e1 -> {
-                eosFrame.dispose();
+                endOfSessionFrame.dispose();
                 mainframe.dispose();
-                frame.setVisible(true);
+                dialogFrame.setVisible(true);
                 fileList.clear();
                 filesNameList.clear();
 
@@ -192,18 +251,18 @@ class GuiModel extends Component {
 
             // Кнопка "Нет"
 
-            noButton.addActionListener(e1 -> eosFrame.dispose());
+            noButton.addActionListener(e1 -> endOfSessionFrame.dispose());
 
             // Добавление компонент на фрейм
 
-            eosFrame.add(errorLabel, new GridBagConstraints(0, 0, 3, 1, 0, 1,
+            endOfSessionFrame.add(errorLabel, new GridBagConstraints(0, 0, 3, 1, 0, 1,
                     GridBagConstraints.CENTER, GridBagConstraints.CENTER, new Insets(10, 1, 1, 1), 0, 0));
-            eosFrame.add(yesButton, new GridBagConstraints(0, 1, 1, 0, 0, 1,
+            endOfSessionFrame.add(yesButton, new GridBagConstraints(0, 1, 1, 0, 0, 1,
                     GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, new Insets(1, 70, 1, 1), 8, 0));
-            eosFrame.add(noButton, new GridBagConstraints(1, 1, 1, 0, 0, 1,
+            endOfSessionFrame.add(noButton, new GridBagConstraints(1, 1, 1, 0, 0, 1,
                     GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, new Insets(1, 17, 1, 1), 0, 0));
 
-            eosFrame.setVisible(true);
+            endOfSessionFrame.setVisible(true);
 
         });
 
@@ -219,17 +278,19 @@ class GuiModel extends Component {
         plusButton.addActionListener(e -> {
             JFileChooser fileChooser = new JFileChooser();
             fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
-            fileChooser.setCurrentDirectory(new java.io.File("/home/wolfram/test"));
             fileChooser.setApproveButtonText("Archive");
             fileChooser.setMultiSelectionEnabled(true);
             fileChooser.showOpenDialog(this);
             File[] files = fileChooser.getSelectedFiles();
+
+            // Запрет на повторные названия файлов
+
             boolean isSafety = true;
             if (files.length != 0) {
                 if (filesNameList.size() != 0) {
-                    for (int i = 0; i < files.length; i++) {
-                        for (int j = 0; j < filesNameList.size(); j++) {
-                            if (filesNameList.get(j).equals(files[i].getName())) {
+                    for (File file : files) {
+                        for (String aFilesNameList : filesNameList) {
+                            if (aFilesNameList.equals(file.getName())) {
                                 isSafety = false;
                                 break;
 
@@ -241,14 +302,17 @@ class GuiModel extends Component {
                 }
 
                 if (isSafety) {
-                    for (int i = 0; i < files.length; i++) {
-                        fileList.add(files[i].getPath());
-                        filesNameList.add(files[i].getName());
-                        filesTableModel.addFile(new String[]{files[i].getName(), files[i].getPath()});
+                    for (File file : files) {
+                        fileList.add(file.getPath());
+                        filesNameList.add(file.getName());
+                        filesTableModel.addFile(new String[]{file.getName(), file.getPath()});
 
                     }
 
                     filesTableModel.fireTableDataChanged();
+
+                    // Создаю отдельный поток на архивацию и прогресс бар. Без отдельного потока медленно работает.
+
                     Zipper zipper = new Zipper(true, destination, compressionLevel, false, fileList, filesNameList);
                     Thread thread = new Thread(zipper);
                     thread.start();
@@ -264,9 +328,12 @@ class GuiModel extends Component {
         });
 
 
-        // Кнопка МИНУС
+        // Кнопка МИНУС. Реализация: удаление файла из рахива = перезапись нужных файлов в архив
 
         minusButton.addActionListener(e -> {
+
+            // Получаем выделенные строки и удаляем из таблицы в обратном порядке
+
             int[] sel = filesTable.getSelectedRows();
             for (int i = sel.length - 1; i > -1; i--) {
                 filesTableModel.removeRow(sel[i]);
@@ -278,6 +345,8 @@ class GuiModel extends Component {
             thread.start();
 
         });
+
+        // Добавление компонент
 
         mainframe.add(pathPanel, new GridBagConstraints(0, 0, 0, 0, 1, 1,
                 GridBagConstraints.NORTHWEST, GridBagConstraints.NORTHWEST, new Insets(0, 0, 0, 0), 0, 0));
@@ -308,10 +377,10 @@ class GuiModel extends Component {
 
     // Реализация таблицы для списка файлов
 
-    public class FilesTableModel extends AbstractTableModel {
+    private class FilesTableModel extends AbstractTableModel {
         private ArrayList<String[]> dataArrayList;
 
-        public FilesTableModel() {
+        FilesTableModel() {
             dataArrayList = new ArrayList<>();
             for (int i = 0; i < dataArrayList.size(); i++) {
                 dataArrayList.add(new String[getColumnCount()]);
@@ -349,12 +418,12 @@ class GuiModel extends Component {
             return rows[columnIndex];
         }
 
-        public void addFile(String[] row) {
+        void addFile(String[] row) {
             dataArrayList.add(row);
 
         }
 
-        public void removeRow(int row) {
+        void removeRow(int row) {
             dataArrayList.remove(row);
             filesNameList.remove(row);
             fileList.remove(row);
