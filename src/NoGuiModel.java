@@ -1,4 +1,3 @@
-import java.io.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -104,17 +103,13 @@ public class NoGuiModel {
     }
 
     private void help() {
-        try (BufferedReader reader = new BufferedReader(new FileReader("./help.txt"))) {
-            String s;
-            while ((s = reader.readLine()) != null) {
-                System.out.println(s);
-
-            }
-
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        System.out.println("Справка по использованию архиватора:\n" +
+                "Использование: java -jar archiver.jar --no-gui [-v] [FILE]... [-q 123456789] [-o DEST]\n" +
+                "Ключи:\n" +
+                "  -v\t\tverbose mode\n" +
+                "  -q\t\tуровень компрессии [-1..9]\n" +
+                "  -o\t\tпуть до архива. Обязательный параметр\n" +
+                "  --help\tсправка");
 
     }
 

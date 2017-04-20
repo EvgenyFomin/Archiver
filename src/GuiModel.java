@@ -1,3 +1,4 @@
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.table.AbstractTableModel;
 import java.awt.*;
@@ -5,6 +6,7 @@ import java.awt.event.ItemEvent;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 
 /**
@@ -209,8 +211,8 @@ class GuiModel extends Component {
         JButton changeButton = new JButton("Изменить");
         JButton plusButton = new JButton();
         JButton minusButton = new JButton();
-        plusButton.setIcon(new ImageIcon("./plus.png"));
-        minusButton.setIcon(new ImageIcon("./minus.png"));
+        plusButton.setIcon(new ImageIcon(getClass().getResource("/resources/plus.png")));
+        minusButton.setIcon(new ImageIcon(getClass().getResource("/resources/minus.png")));
 
         JComboBox<String> compressLevelComboBox =
                 new JComboBox<>(new String[]{"Default", "0", "1", "2", "3", "4", "5", "6", "7", "8", "9"});
